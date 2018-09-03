@@ -1,20 +1,38 @@
 // Enemies our player must avoid
 class Enemy {
-  constructor(){
-    this.x = 0;
-    this.y = 0;
+  constructor(x,y, speed){
+    this.x = x;
+    this.y = y + 30;
+    this.speed = speed;
     this.sprite = 'images/enemy-bug.png';
+    this.step = 101;
+    this.boundary = this.step * 5;
+    this.resetPos = -this.step;
   }
   update(dt){
   // You should multiply any movement by the dt parameter
   // which will ensure the game runs at the same speed for
-  // all computers.
+  // all computers
+    if(this.x < this.boundary){
+      this.x += 150 * dt;
+    }else{
+      //reset enemy position to start
+      this.x = this.resetPos;
+    }
+
   }
+
   render(){
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
   }
 }
-
+// Place all enemy objects in an array called allEnemies
+const enemyA = new Enemy(50, 5);
+const enemyB = new Enemy(-50, 115, 350);
+const enemyC = new Enemy((-50*4), 115, 550);
+const enemyD = new Enemy(50, 255);
+const allEnemies = [];
+allEnemies.push(enemyA, enemyB, enemyC, enemyD);
 // Now write your own player class
 class Hero {
   constructor(){ //https://matthewcranford.com/arcade-game-walkthrough-part-4-heros-first-steps/
@@ -64,8 +82,7 @@ class Hero {
 // Now instantiate your objects.
 // Place the player object in a variable called player
 const player = new Hero();
-// Place all enemy objects in an array called allEnemies
-const enemy = new Enemy(['allEnemies']);
+
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
