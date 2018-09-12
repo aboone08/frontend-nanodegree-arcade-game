@@ -1,88 +1,98 @@
 // Enemies our player must avoid
 class Enemy {
-  constructor(x,y, speed){
+  constructor(x, y, speed){
     this.x = x;
-    this.y = y + 30;
+    this.y = y;
     this.speed = speed;
     this.sprite = 'images/enemy-bug.png';
     this.step = 101;
-    this.boundary = this.step * 5;
-    this.resetPos = -this.step;
   }
-  update(dt){
+  update(dt){//https://medium.com/letsboot/classic-arcade-game-with-js-5687e4125169
   // You should multiply any movement by the dt parameter
   // which will ensure the game runs at the same speed for
   // all computers
-    if(this.x < this.boundary){
-      this.x += 150 * dt;
-    }else{
-      //reset enemy position to start
-      this.x = this.resetPos;
+    this.x += this.speed * dt;
+    if(this.x > 510){
+       this.x = -50;
+       this.speed = 100 + Math.floor(Math.random() * 222);
+    };
+    //checkCollisions, https://medium.com/letsboot/classic-arcade-game-with-js-5687e4125169
+    if(player.x < this.x + 80 &&
+       player.x + 80 > this.x &&
+       player.y < this.y + 60 &&
+       60 + player.y > this.y){
+       player.x = 202;
+       player.y = 405;
     }
-
   }
-
+  //draws enemies to the board
   render(){
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
   }
 }
-// Place all enemy objects in an array called allEnemies
-const enemyA = new Enemy(50, 5);
-const enemyB = new Enemy(-50, 115, 350);
-const enemyC = new Enemy((-50*4), 115, 550);
-const enemyD = new Enemy(50, 255);
-const allEnemies = [];
-allEnemies.push(enemyA, enemyB, enemyC, enemyD);
+
 // Now write your own player class
 class Hero {
-  constructor(){ //https://matthewcranford.com/arcade-game-walkthrough-part-4-heros-first-steps/
+  constructor(x,y){ //https://matthewcranford.com/arcade-game-walkthrough-part-4-heros-first-steps/
     this.sprite = 'images/char-princess-girl.png';
     this.step = 101;
     this.jump = 83;
-    this.startX = this.step * 2;
-    this.startY = (this.jump * 5)-20;
-    this.x = this.startX;
-    this.y = this.startY;
+    this.x = x;
+    this.y = y;
   }
 // This class requires an update(), render() and
 // a handleInput() method.
   //update()
-  //render()
+  update(dt){
+
+  }
+  //draws hero to the board
   render(){
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
   }
   //handleInput() Used to execute a block of code based on user input https://www.w3schools.com/jsref/jsref_switch.asp
-  handleInput(input){
-    this.input = input;
-    switch(input){
-      case 'left':
+  handleInput(keypress){
+    this.keypress = keypress;
+    switch(keypress){
+      case 'left':// allows hero to move left
         if(this.x > 0){
           this.x -= this.step;
         }
         break;
-      case 'up':
+      case 'up':// allows hero to move up
         if(this.y > 0){
           this.y -= this.jump;
         }
         break;
-      case 'right':
+      case 'right':// allows hero to move right
         if(this.x < this.step * 4){
           this.x += this.step;
-        };
+        }
         break;
-      case 'down':
+      case 'down':// allows hero to move down
         if(this.y < this.jump * 4){
           this.y += this.jump;
         }
         break;
     }
-
+    if(this.y < 0){
+      alert("Congrats! You've made it to the water.");
+      this.y = 405;
+    }
   }
 }
-// Now instantiate your objects.
-// Place the player object in a variable called player
-const player = new Hero();
 
+// Now instantiate your objects.
+// Place all enemy objects in an array called allEnemies
+const allEnemies = [];
+let enemyLocation = [63, 147, 230, 313]; //https://www.youtube.com/watch?v=7PHhRrjgTDA
+
+enemyLocation.forEach(function (locationY){ //https://www.youtube.com/watch?v=7PHhRrjgTDA
+  enemy = new Enemy(0, locationY, 200);
+  allEnemies.push(enemy);
+});
+// Place the player object in a variable called player
+const player = new Hero(202, 405);
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
@@ -93,6 +103,5 @@ document.addEventListener('keyup', function(e) {
         39: 'right',
         40: 'down'
     };
-
     player.handleInput(allowedKeys[e.keyCode]);
 });

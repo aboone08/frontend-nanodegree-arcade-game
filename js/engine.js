@@ -63,7 +63,6 @@ var Engine = (function(global) {
      * game loop.
      */
     function init() {
-        reset();
         lastTime = Date.now();
         main();
     }
@@ -78,8 +77,8 @@ var Engine = (function(global) {
      * on the entities themselves within your app.js file).
      */
     function update(dt) {
-        updateEntities(dt);
-        // checkCollisions();
+          updateEntities(dt);
+      //  checkCollisions();
     }
 
     /* This is called by the update function and loops through all of the
@@ -93,7 +92,7 @@ var Engine = (function(global) {
         allEnemies.forEach(function(enemy) {
            enemy.update(dt);
        });
-      // player.update();
+       player.update();
     }
 
     /* This function initially draws the "game level", it will then call
@@ -137,7 +136,6 @@ var Engine = (function(global) {
                 ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
             }
         }
-
         renderEntities();
     }
 
@@ -152,7 +150,6 @@ var Engine = (function(global) {
         allEnemies.forEach(function(enemy) {
             enemy.render();
         });
-
         player.render();
     }
 
